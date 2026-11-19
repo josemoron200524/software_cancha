@@ -1,0 +1,19 @@
+# Variables de entorno y contraseñas locales
+.env
+.vscode/settings.json
+
+# Dependencias de Node.js
+node_modules/
+
+# Entornos virtuales y caché de Python
+__pycache__/
+.venv/
+venv/
+
+# Archivos compilados y logs
+dist/
+build/
+*.log
+
+.pytest_cache/
+.coverage
