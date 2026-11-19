@@ -4,6 +4,7 @@ from app.core.database import get_db_connection
 from app.routes.auth_routes import router as auth_router
 from app.routes.catalogo_routes import router as catalogo_router
 from app.routes.persona_routes import router as persona_router
+from app.routes.reserva_routes import router as reserva_router
 
 app = FastAPI(
     title="API Sistema de Reservas de Canchas Deportivas",
@@ -22,6 +23,7 @@ app.add_middleware(
 app.include_router(auth_router)
 app.include_router(catalogo_router)
 app.include_router(persona_router)
+app.include_router(reserva_router)
 
 
 @app.get("/", tags=["Sistema"])
