@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 import '../models/usuario_model.dart';
 import '../services/auth_service.dart';
 import 'agenda_screen.dart';
+import 'catalogos_admin_screen.dart';
 import 'clientes_screen.dart';
+import 'dashboard_screen.dart';
 import 'disponibilidad_screen.dart';
 import 'login_screen.dart';
 import 'mi_cuenta_screen.dart';
 import 'mis_reservas_screen.dart';
 import 'pagos_screen.dart';
+import 'personas_admin_screen.dart';
 
 class _SeccionMenu {
   final String titulo;
@@ -33,59 +36,16 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _indiceActual = 0;
 
-  Widget _placeholderVista(IconData icono, String titulo, String descripcion) {
-    return Center(
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 640),
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Card(
-            child: Padding(
-              padding: const EdgeInsets.all(28),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(
-                    icono,
-                    size: 56,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    titulo,
-                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    descripcion,
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.bodyLarge,
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
   List<_SeccionMenu> get _secciones {
     switch (widget.usuario.rol) {
       case 'administrador':
-        return [
+        return const [
           _SeccionMenu(
             titulo: 'Dashboard',
             icono: Icons.analytics_outlined,
-            vista: _placeholderVista(
-              Icons.analytics_outlined,
-              'Dashboard',
-              'KPIs, ingresos recaudados y reportes por cancha/servicio (Fase 4).',
-            ),
+            vista: DashboardScreen(),
           ),
-          const _SeccionMenu(
+          _SeccionMenu(
             titulo: 'Agenda',
             icono: Icons.calendar_month_outlined,
             vista: AgendaScreen(),
@@ -93,18 +53,14 @@ class _HomeScreenState extends State<HomeScreen> {
           _SeccionMenu(
             titulo: 'Catálogos',
             icono: Icons.stadium_outlined,
-            vista: _placeholderVista(
-              Icons.stadium_outlined,
-              'Catálogos',
-              'Gestión de canchas, servicios y horarios de atención (Fase 4).',
-            ),
+            vista: CatalogosAdminScreen(),
           ),
-          const _SeccionMenu(
+          _SeccionMenu(
             titulo: 'Personas',
             icono: Icons.groups_outlined,
-            vista: ClientesScreen(),
+            vista: PersonasAdminScreen(),
           ),
-          const _SeccionMenu(
+          _SeccionMenu(
             titulo: 'Pagos',
             icono: Icons.payments_outlined,
             vista: PagosScreen(),
