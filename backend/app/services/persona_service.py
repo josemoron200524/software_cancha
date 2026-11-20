@@ -3,6 +3,7 @@ from app.core.security import hash_password
 from app.repositories.persona_repository import PersonaRepository
 from app.schemas.persona_schema import (
     ClienteCreate,
+    ClienteHabilitarPortal,
     ClienteUpdate,
     EmpleadoCreate,
     EmpleadoUpdate,
@@ -78,6 +79,37 @@ class PersonaService:
         }
         return self.repo.actualizar_cliente(
             id_cliente, payload, modificado_por=id_usuario_actual
+        )
+
+    def habilitar_portal_cliente(
+        self,
+        id_cliente: int,
+        datos: ClienteHabilitarPortal,
+        id_usuario_actual: int,
+    ) -> dict:
+        cliente = self.obtener_cliente(id_cliente)
+        if not cliente["activo"]:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="No se puede habilitar acceso al portal a un cliente inactivo.",
+            )
+        if cliente["id_usuario"] is not None:
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail="Este cliente ya cuenta con acceso al portal.",
+            )
+        if self.repo.existe_correo(datos.correo):
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail=f"Ya existe una cuenta registrada con el correo '{datos.correo}'.",
+            )
+
+        password_cifrado = hash_password(datos.password)
+        return self.repo.habilitar_portal_cliente(
+            id_cliente=id_cliente,
+            correo=datos.correo,
+            password_hash=password_cifrado,
+            modificado_por=id_usuario_actual,
         )
 
     def desactivar_cliente(self, id_cliente: int, id_usuario_actual: int) -> dict:

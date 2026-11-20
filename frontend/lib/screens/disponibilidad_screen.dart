@@ -392,7 +392,7 @@ class _DisponibilidadScreenState extends State<DisponibilidadScreen> {
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
               itemCount: _canchas.length,
-              separatorBuilder: (_, __) => const SizedBox(width: 12),
+              separatorBuilder: (_, _) => const SizedBox(width: 12),
               itemBuilder: (context, index) {
                 final cancha = _canchas[index];
                 final seleccionada =

@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, status
 from app.core.security import require_roles
 from app.schemas.persona_schema import (
     ClienteCreate,
+    ClienteHabilitarPortal,
     ClienteUpdate,
     EmpleadoCreate,
     EmpleadoUpdate,
@@ -45,6 +46,21 @@ def actualizar_cliente(
     usuario: dict = Depends(require_roles("administrador", "recepcionista")),
 ):
     return persona_service.actualizar_cliente(id_cliente, datos, usuario["id_usuario"])
+
+
+@router.post(
+    "/clientes/{id_cliente}/habilitar-portal",
+    status_code=status.HTTP_201_CREATED,
+    tags=["Clientes"],
+)
+def habilitar_portal_cliente(
+    id_cliente: int,
+    datos: ClienteHabilitarPortal,
+    usuario: dict = Depends(require_roles("administrador", "recepcionista")),
+):
+    return persona_service.habilitar_portal_cliente(
+        id_cliente, datos, usuario["id_usuario"]
+    )
 
 
 @router.delete("/clientes/{id_cliente}", tags=["Clientes"])

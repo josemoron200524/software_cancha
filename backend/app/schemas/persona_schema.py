@@ -37,6 +37,16 @@ class ClienteUpdate(BaseModel):
     activo: bool = True
 
 
+class ClienteHabilitarPortal(BaseModel):
+    correo: str = Field(..., min_length=5, max_length=120)
+    password: str = Field(..., min_length=6, max_length=72)
+
+    @field_validator("correo")
+    @classmethod
+    def validar_correo(cls, v: str) -> str:
+        return _validar_formato_correo(v)
+
+
 # ======================== EMPLEADOS ========================
 class EmpleadoCreate(BaseModel):
     nombres: str = Field(..., min_length=2, max_length=80)

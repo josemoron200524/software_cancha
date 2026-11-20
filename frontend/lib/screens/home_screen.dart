@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import '../models/usuario_model.dart';
 import '../services/auth_service.dart';
+import 'agenda_screen.dart';
+import 'clientes_screen.dart';
 import 'disponibilidad_screen.dart';
 import 'login_screen.dart';
 import 'mi_cuenta_screen.dart';
 import 'mis_reservas_screen.dart';
+import 'pagos_screen.dart';
 
 class _SeccionMenu {
   final String titulo;
@@ -82,14 +85,10 @@ class _HomeScreenState extends State<HomeScreen> {
               'KPIs, ingresos recaudados y reportes por cancha/servicio (Fase 4).',
             ),
           ),
-          _SeccionMenu(
+          const _SeccionMenu(
             titulo: 'Agenda',
             icono: Icons.calendar_month_outlined,
-            vista: _placeholderVista(
-              Icons.calendar_month_outlined,
-              'Agenda',
-              'Agenda diaria, creación de reservas y control de los 5 estados (Fase 3).',
-            ),
+            vista: AgendaScreen(),
           ),
           _SeccionMenu(
             titulo: 'Catálogos',
@@ -100,53 +99,33 @@ class _HomeScreenState extends State<HomeScreen> {
               'Gestión de canchas, servicios y horarios de atención (Fase 4).',
             ),
           ),
-          _SeccionMenu(
+          const _SeccionMenu(
             titulo: 'Personas',
             icono: Icons.groups_outlined,
-            vista: _placeholderVista(
-              Icons.groups_outlined,
-              'Personas',
-              'CRUD de clientes presenciales/portal y empleados (Fases 3 y 4).',
-            ),
+            vista: ClientesScreen(),
           ),
-          _SeccionMenu(
+          const _SeccionMenu(
             titulo: 'Pagos',
             icono: Icons.payments_outlined,
-            vista: _placeholderVista(
-              Icons.payments_outlined,
-              'Pagos',
-              'Registro de anticipos/saldos y configuración de reglas (Fases 3 y 4).',
-            ),
+            vista: PagosScreen(),
           ),
         ];
       case 'recepcionista':
         return [
-          _SeccionMenu(
+          const _SeccionMenu(
             titulo: 'Agenda',
             icono: Icons.calendar_month_outlined,
-            vista: _placeholderVista(
-              Icons.calendar_month_outlined,
-              'Agenda',
-              'Agenda diaria por cancha, confirmación y control de estados (Fase 3).',
-            ),
+            vista: AgendaScreen(),
           ),
-          _SeccionMenu(
+          const _SeccionMenu(
             titulo: 'Clientes',
             icono: Icons.people_outline,
-            vista: _placeholderVista(
-              Icons.people_outline,
-              'Clientes',
-              'Búsqueda y registro rápido de clientes presenciales (Fase 3).',
-            ),
+            vista: ClientesScreen(),
           ),
-          _SeccionMenu(
+          const _SeccionMenu(
             titulo: 'Pagos',
             icono: Icons.payments_outlined,
-            vista: _placeholderVista(
-              Icons.payments_outlined,
-              'Pagos',
-              'Cobro de anticipos y saldos con confirmación automática (Fase 3).',
-            ),
+            vista: PagosScreen(),
           ),
           _SeccionMenu(
             titulo: 'Disponibilidad',
@@ -245,7 +224,8 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 NavigationRail(
                   selectedIndex: _indiceActual,
-                  onDestinationSelected: (i) => setState(() => _indiceActual = i),
+                  onDestinationSelected: (i) =>
+                      setState(() => _indiceActual = i),
                   labelType: NavigationRailLabelType.all,
                   destinations: secciones
                       .map(

@@ -143,9 +143,58 @@ class PersonaRepository:
                 cliente = cur.fetchone()
                 if cliente and cliente["id_usuario"]:
                     cur.execute(
-                        "UPDATE usuarios SET activo = %s WHERE id_usuario = %s;",
+                        """
+                        UPDATE usuarios
+                        SET activo = %s
+                        WHERE id_usuario = %s
+                        RETURNING correo;
+                        """,
                         (datos["activo"], cliente["id_usuario"]),
                     )
+                    usuario = cur.fetchone()
+                    cliente["correo"] = usuario["correo"] if usuario else None
+                elif cliente:
+                    cliente["correo"] = None
+                return cliente
+
+    def habilitar_portal_cliente(
+        self,
+        id_cliente: int,
+        correo: str,
+        password_hash: str,
+        modificado_por: int,
+    ) -> dict | None:
+        with get_db_connection() as conn:
+            with conn.cursor() as cur:
+                cur.execute("SELECT id_rol FROM roles WHERE nombre = 'cliente';")
+                rol = cur.fetchone()
+                if not rol:
+                    raise ValueError("El rol 'cliente' no existe en la base de datos.")
+
+                cur.execute(
+                    """
+                    INSERT INTO usuarios (id_rol, correo, password_hash)
+                    VALUES (%s, %s, %s)
+                    RETURNING id_usuario;
+                    """,
+                    (rol["id_rol"], correo, password_hash),
+                )
+                id_usuario_creado = cur.fetchone()["id_usuario"]
+
+                cur.execute(
+                    """
+                    UPDATE clientes
+                    SET id_usuario = %s,
+                        modificado_por = %s
+                    WHERE id_cliente = %s
+                    RETURNING id_cliente, id_usuario, nombres, apellidos, ci_nit,
+                              telefono, activo, fecha_creacion, fecha_modificacion;
+                    """,
+                    (id_usuario_creado, modificado_por, id_cliente),
+                )
+                cliente = cur.fetchone()
+                if cliente:
+                    cliente["correo"] = correo
                 return cliente
 
     def desactivar_cliente(self, id_cliente: int, modificado_por: int) -> dict | None:

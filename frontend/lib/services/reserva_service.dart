@@ -94,19 +94,33 @@ class ReservaService {
     return Reserva.fromJson(data);
   }
 
+  static Future<Reserva> cambiarEstadoReserva({
+    required int idReserva,
+    required String estado,
+    String? motivoCancelacion,
+  }) async {
+    final body = <String, dynamic>{'estado': estado};
+    if (motivoCancelacion != null && motivoCancelacion.trim().isNotEmpty) {
+      body['motivo_cancelacion'] = motivoCancelacion.trim();
+    }
+
+    final data = await ApiClient.patch(
+      '/reservas/$idReserva/estado',
+      body: body,
+    ) as Map<String, dynamic>;
+
+    return Reserva.fromJson(data);
+  }
+
   static Future<Reserva> cancelarReserva({
     required int idReserva,
     required String motivo,
   }) async {
-    final data = await ApiClient.patch(
-      '/reservas/$idReserva/estado',
-      body: {
-        'estado': 'cancelada',
-        'motivo_cancelacion': motivo.trim(),
-      },
-    ) as Map<String, dynamic>;
-
-    return Reserva.fromJson(data);
+    return cambiarEstadoReserva(
+      idReserva: idReserva,
+      estado: 'cancelada',
+      motivoCancelacion: motivo,
+    );
   }
 
   static Future<ResumenPagosReserva> obtenerPagosReserva(int idReserva) async {
